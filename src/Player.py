@@ -42,11 +42,12 @@ class Player:
 		amount_to_call = curr_round.pot.amount_to_call(self)
 		print('Player', self.id, 'the amount you need to call is', amount_to_call)
 		
-		# check if player cannot make call
+		# if player cannot make call, remove them from round and game
 		if self.money < amount_to_call:
-			print('Player', self.id, 'goes out with', self.money, 'left')
-			# remove player from round and game
+			print(' - Player', self.id, 'goes out with', self.money, 'left')
 			curr_round.add_folded_player(self, True)
+			self.money = 0 # bankrupt player
+			return
 
 		res = input('Would you like to fold, call, or raise? (f/c/r) ')
 		if res == 'c':
@@ -54,7 +55,7 @@ class Player:
 		elif res == 'r':
 			raise_by = input('How much would you like to raise? ')
 			action = Raise(self, curr_round, amount_to_call, int(raise_by))
-		else: # assume 'f' for now
+		else: # assume 'f'
 			action = Fold(self, curr_round)
 
 		if action.is_valid():
